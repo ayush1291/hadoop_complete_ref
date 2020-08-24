@@ -1,0 +1,18 @@
+Pending reads:
+- shuffle and sort tuning - page 197
+- page 234- no reduce tasks- NLineINputFormat
+- filesystem image and edit log on page 318
+- page 294, how much memory does a namenode need?
+
+Chap2:
+ - gzip compression level is ?
+ - make a simple map reduce program and check if offsets are coming in map phase. Also, check if reduceer get started before map task finishes( That's why you can see a reduce status greater than 0% (but less than 33%) when the map status is not yet 100%.)
+ - try to build a job containing one jar for driver and mapper code and all in other jars
+ - how do we specify size for map task and reduce task in a mapreduce job?
+ - start a map reduce job and check if a new jvm is launched when map task is running and when reduce task is running - do this using grep command
+
+Chap3:
+ -
+
+
+

@@ -1,0 +1,30 @@
+- Filesystems that manage storage across a network of machines is called distributed filesystem
+- HDFS is designed to store v large files with streaming data access patterns
+- Time to read whole dataset is imp than latency to read the first record
+- HDFS is optimized for delivering high throughput of data at the expense of latency
+- Namenode holds the metadata for files, so we are limited to the number of files we can keep. Thumb rule: 150 bytes for each file, dir and block, arnd 300 mb for 1 million files
+- No support for multiple writers and modifications at arbitrary offsets
+
+Blocks:
+- Single Disk has a block, which is min  amount of data it can read or write,  generally size of 512 bytes.  Filesystem for a single disk is integral multiple of this, arnd few KBs.
+- HDFS has arnd 128 mb. Unlike a single disk filesystem, a file in hdfs does not occupy full block's worth of memory. eg, 1 mb of file will occupy on;y 1 mb, not 128 mb - as each file is stored in a separate block
+- hdfs block size is large, as then seek time which is arnd 10 ms, and transfer rate is arnd 100mb/s. it is like 1% of transfer time.
+- Blocks only are concerned with data, they dont bother abt file metadata, file file permissions etc.
+- fsck command understands the blocks : hdfs fsck . -files -blocks
+- Each file will get stored in a separate block , so if we have large number of small files, each file metadata and management is toff for namenode
+
+
+Namenodes and Datanodes:
+- Namenode manages filesystem namespace, files and dir metadata, filesystem tree - in form of namespace image and edit log - this info is stored persistently using secondary namenode, only the block info is stored at runtime when system goes up.
+- Namenodes knows all datanodes on which all the blocks for a given file are located, it does not store block locations permanently. this info is reconstructed from datanods, when the system starts
+- Datanodes report to namenode with list of blocks they are storing
+- Namenode should be resilient to failure as without it, it wont be possible to reconstruct the files from blocks
+-when you are starting namenode, latest fsimage file is load into “in-memory”. and at the same time, edit log file is also loaded into memory if fsimage file doesn’t contain up-to date information. The information which is available in edit log(s) will be replayed to update the in-memory of fsimage data. What information is available in editlog, fsimage…etc can be shown as below
+read the link: https://data-flair.training/forums/topic/in-which-location-namenode-stores-its-metadata-and-why/
+
+Block caching:(can read in detail later)
+- Block is cached only in one of the datanode, instruct which files to cache by adding cache directiveto a cache pool- the heartbeats basically contain the cache report
+
+
+
+

@@ -1,0 +1,61 @@
+Map reduce is a programming model for data processing
+Data is generally semi structured and record oriented
+It is easier to process small number of large files and data can be generally preprocessed if there are many small files
+Classic tool for processing line oriented data is awk
+
+Analysing with unix tools (a weather dataset) - 2 approaches - split in eaual parts or one file per year -- some problems are to be handled
+-- As file sizes are different, so it isnt easy to split them into equal parts, as whole run is dominated by longest file
+-- split and assign each to a different process
+-- if there is one file for each year, then results can be combined by getting max for each year and sorting by year
+-- if splits are there, then further after getting max for each chunk, we need to look for highest for the max of each year
+-- we are still limited by processing capacity of a single machine
+
+Analysing the data with Hadoop(It is a framework)
+ - 2 phases in map reduce, each phase has a key value par, in map phase key in offset of the beginning of the line from the beginning of the file
+ - in map phase, we can prepare data for reduce phase to work, all a good place to filter bad records
+
+
+Shuffle and sorting - done by MapReduce Framework
+ -transfer of data from mapper to reducer
+ - shuffle can start even before map phase has finished and this happens before reducer tasks starts
+ - That's why you can see a reduce status greater than 0% (but less than 33%) when the map status is not yet 100%.
+ - no shuffle and sort when no reducers
+ - sorting is a must in map Reduce framework, as this saves reducer the work which could be done later, as if sorted, reducer knows when to start a task as reducer has a list of objects.
+
+- Rather than using buit in data types, hadoop provides its own set of data types, which are optimised for ntw serialisation- as it should be more compact and fast
+
+- An example mapreduce job in example- read in code
+        - to start the program use, hadoop namenode -format
+        - grep namenode process and kill the ones running - for this use hadoop namenode command to see if its connecting
+        - use hadoop datanode and see if datanode has started, where you can grep namenode and datatnode to see if it has loaded
+        - output dir should not exist before
+        - For running:
+            - export HADOOP_CLASSPATH= jar location
+            - hadoop <Main Class Name> <args, if any?>
+        - When hadoop command in invoked, it launches a JVM, add all libraries to hadoop classpath and picks up hadoop config. Next application classes are added to the classpath using HADOOP_CLASSPATH
+        - we can use hadoop classpath command to see what jars are there in classpath
+        - we may debug the prog using the map and reduce tasks, their ids are like *m* and *r*- can see the same when running the job
+
+- we use setjarbyclass method in order for the hadoop to identify which jar it has to send across the cluster which have mapper and reducer classes - so that all jars are not send there unneccesarily
+
+Scaling Out
+ - Hadoop runs the job by dividing into tasks called map and reduce tasks.
+ - Hadoop divides the input into fixed size pieces called splits. Runs one map task for each split preferrably in local node( where the data exists).
+ - Load balancing is better when splits are small, since a faster machine will be able to process more splits. Also increases when splits are more fine grained (small tasks).
+ - Splits should not be too small as then overhead of managing the splits is there, a good split size is generally 128 mb which is size of block
+ - Optimal size of split should be size of block, as if split spanned two blocks, then overhead of trasferring the data across the nodes, as map task will run on one of the machines
+ - Map tasks are stored locally on disk, as if they fail, then re run the same in another node
+
+ - No data locality in reduce tasks, input to the map task is from all the mappers. The output from map is sorted, and then transferred to node when reduce is running, then data is merged there and fed to user defined reduce tasks.First replica is stored in same rack and rest in off rack.
+ - we may change the heap size for map and reduce tasks as they are just jvms running
+
+Combiner Functions:
+ - we can set combiner functions- see the code
+ - used when data can further be reduced before passing to the reducer
+
+- the number of mapper tasks initially is equal to number of files processed
+
+
+
+
+

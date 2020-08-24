@@ -1,0 +1,13 @@
++ meant for quering large datasets stored in hadoop files
++ HiveQL automatically translates SQL-like queries into MapReduce jobs. Apache Hive organizes data into tables
++ Hive services:
+    Driver :It creates the session handles for the query and sends the query to the compiler.
+    Compiler: It performs semantic analysis and type-checking on the different query blocks and query expressions by using the metadata stored in metastore and generates an execution plan.
+    The execution plan created by the compiler is the DAG(Directed Acyclic Graph), where each stage is a map/reduce job, operation on HDFS, a metadata operation.
+    Metastore: Metastore is a central repository that stores the metadata information about the structure of tables and partitions, including column and column type information.
+    It also stores information of serializer and deserializer, required for the read/write operation, and HDFS files where data is stored. This metastore is generally a relational database.
+    Metastore provides a Thrift interface for querying and manipulating Hive metadata.
+    Exectution engine: he execution engine then sends these stages of DAG to appropriate components. For each task, either mapper or reducer, the deserializer associated with a table or intermediate output is used in order to read the rows from HDFS files. These are then passed through the associated operator tree.
+    Once the output gets generated, it is then written to the HDFS temporary file through the serializer. These temporary HDFS files are then used to provide data to the subsequent map/reduce stages of the plan
+
++
